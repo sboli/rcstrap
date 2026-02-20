@@ -5,6 +5,8 @@ import { ConfigService } from '../config';
 @Injectable()
 export class WebhookService {
   private readonly logger = new Logger(WebhookService.name);
+  private failedAt = 0;
+  private static readonly BACKOFF_MS = 5000;
 
   constructor(private readonly config: ConfigService) {}
 
@@ -12,11 +14,22 @@ export class WebhookService {
     const url = this.config.get('webhookUrl');
     const timeout = this.config.get('webhookTimeoutMs');
 
+    // Circuit breaker: skip if webhook failed recently
+    if (this.failedAt && Date.now() - this.failedAt < WebhookService.BACKOFF_MS) {
+      return false;
+    }
+
     try {
-      await axios.post(url, payload, { timeout });
+      await axios.post(url, payload, {
+        timeout,
+        // Fast connection timeout separate from response timeout
+        signal: AbortSignal.timeout(Math.min(timeout, 2000)),
+      });
+      this.failedAt = 0;
       this.logger.log(`Webhook delivered to ${url}`);
       return true;
     } catch (err: any) {
+      this.failedAt = Date.now();
       this.logger.warn(`Webhook delivery failed: ${err.message}`);
       return false;
     }

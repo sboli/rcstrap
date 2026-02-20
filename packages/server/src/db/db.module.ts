@@ -24,7 +24,9 @@ export type Db = BetterSQLite3Database<typeof schema>;
 
         const sqlite = new Database(dbPath);
         sqlite.pragma('journal_mode = WAL');
+        sqlite.pragma('synchronous = NORMAL');
         sqlite.pragma('foreign_keys = ON');
+        sqlite.pragma('cache_size = -64000');
 
         const db = drizzle(sqlite, { schema });
 
@@ -63,6 +65,7 @@ export type Db = BetterSQLite3Database<typeof schema>;
           CREATE INDEX IF NOT EXISTS idx_messages_phone ON messages(phone);
           CREATE INDEX IF NOT EXISTS idx_messages_message_id ON messages(message_id);
           CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at);
+          CREATE INDEX IF NOT EXISTS idx_messages_phone_created ON messages(phone, created_at DESC);
         `);
 
         return db;

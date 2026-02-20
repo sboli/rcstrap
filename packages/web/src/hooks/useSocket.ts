@@ -17,6 +17,13 @@ export function useSocket() {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     });
 
+    socket.on('message:batch', (msgs: any[]) => {
+      for (const msg of msgs) {
+        addMessage(msg);
+      }
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    });
+
     socket.on('message:status', ({ messageId, phone, status }) => {
       updateMessageStatus(messageId, phone, status);
     });
@@ -31,6 +38,7 @@ export function useSocket() {
 
     return () => {
       socket.off('message:new');
+      socket.off('message:batch');
       socket.off('message:status');
       socket.off('message:revoked');
       socket.off('config:changed');
