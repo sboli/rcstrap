@@ -74,10 +74,10 @@ class ExactlyOneActionConstraint implements ValidatorConstraintInterface {
       'openUrlAction',
       'shareLocationAction',
     ];
-    return actions.filter((a) => obj[a] !== undefined).length === 1;
+    return actions.filter((a) => obj[a] !== undefined).length <= 1;
   }
   defaultMessage() {
-    return 'Exactly one action type must be specified per suggested action';
+    return 'At most one action type must be specified per suggested action';
   }
 }
 
