@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { AgentMessagesController } from './agent-messages/agent-messages.controller';
 import { AgentMessagesService } from './agent-messages/agent-messages.service';
+import { NormalizeRbmMiddleware } from './agent-messages/normalize-rbm.middleware';
 import { AgentEventsController } from './agent-events/agent-events.controller';
 import { FilesController } from './files/files.controller';
 import { CapabilitiesController } from './capabilities/capabilities.controller';
@@ -23,4 +24,10 @@ import { WebhookModule } from '../webhook/webhook.module';
   ],
   providers: [AgentMessagesService],
 })
-export class RcsModule {}
+export class RcsModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(NormalizeRbmMiddleware)
+      .forRoutes(AgentMessagesController);
+  }
+}

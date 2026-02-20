@@ -53,9 +53,13 @@ export class Media {
   @IsEnum(MediaHeight)
   height: MediaHeight;
 
+  @IsOptional()
   @ValidateNested()
   @Type(() => MediaContentInfo)
-  contentInfo: MediaContentInfo;
+  contentInfo?: MediaContentInfo;
+
+  @IsOptional()
+  uploadedRbmFile?: any;
 }
 
 @ValidatorConstraint({ name: 'cardContentRequired', async: false })

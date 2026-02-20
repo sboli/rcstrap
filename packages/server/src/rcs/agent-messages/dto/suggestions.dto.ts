@@ -59,6 +59,18 @@ export class CreateCalendarEventAction {
 export class OpenUrlAction {
   @IsUrl()
   url: string;
+
+  @IsOptional()
+  @IsString()
+  application?: string;
+
+  @IsOptional()
+  @IsString()
+  webviewViewMode?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 }
 
 export class ShareLocationAction {}
@@ -88,6 +100,10 @@ export class SuggestedAction {
 
   @IsString()
   postbackData: string;
+
+  @IsOptional()
+  @IsString()
+  fallbackUrl?: string;
 
   @IsOptional()
   @ValidateNested()
