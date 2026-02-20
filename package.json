@@ -1,0 +1,22 @@
+{
+  "name": "rcstrap",
+  "private": true,
+  "scripts": {
+    "dev:server": "pnpm --filter @rcstrap/server dev",
+    "dev:web": "pnpm --filter @rcstrap/web dev",
+    "dev:all": "concurrently \"pnpm dev:server\" \"pnpm dev:web\"",
+    "build": "pnpm --filter @rcstrap/web build && pnpm --filter @rcstrap/server build",
+    "start": "pnpm --filter @rcstrap/server start:prod"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "esbuild",
+      "@nestjs/core"
+    ]
+  }
+}

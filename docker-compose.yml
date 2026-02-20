@@ -1,0 +1,14 @@
+services:
+  rcstrap:
+    build: .
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - rcstrap-data:/app/data
+    environment:
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://host.docker.internal:8080/webhook}
+      - AGENT_ID=${AGENT_ID:-rcstrap-test-agent}
+    restart: unless-stopped
+
+volumes:
+  rcstrap-data:
